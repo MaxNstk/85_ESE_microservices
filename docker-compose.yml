@@ -22,17 +22,13 @@ services:
     restart: always
     build:
       context: ./django 
-    command: >
-      sh -c "
-        python manage.py migrate &&
-        python manage.py runserver 0.0.0.0:${DJANGO_HOST_PORT}
-      "
     volumes:
       - ./django:/code
       - ./django/media:/code/media
     ports:
       - ${DJANGO_HOST_PORT}:${DJANGO_HOST_PORT}
     depends_on:
-      - db_postgres
+      - db
 
-      
+volumes:
+  pgdata:
