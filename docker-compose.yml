@@ -22,6 +22,7 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     ports:
       - ${RABBITMQ_PORT}:${RABBITMQ_PORT}
+      - '15672:15672'
 
   celery_worker: 
     container_name: celery_worker
@@ -32,10 +33,12 @@ services:
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       RABBITMQ_HOST: rabbitmq  # serviço do rabbitmq acima
     restart: always
-    network_mode: "host"
     build:
       context: ./django
-    command: celery -A app worker -l info
+    command: >
+      sh -c "
+        celery -A app worker -l info
+      "
     ports:
       - 6900:6900
     volumes:
