@@ -41,8 +41,17 @@ services:
   fastapi:
     container_name: fastapi
     build: ./pdf_to_image
+    environment:
+      FASTAPI_PORT: ${FASTAPI_PORT}
     ports:
-      - 8000:8001
+      - ${FASTAPI_PORT}:${FASTAPI_PORT}
+    volumes:
+      - ./pdf_to_image:/code
+      - ./pdf_to_image/uploads:/code/uploads
+    command: >
+      sh -c "
+        uvicorn app.main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
+      "
 
 volumes:
   pgdata:

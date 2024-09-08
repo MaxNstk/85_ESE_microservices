@@ -14,4 +14,3 @@ COPY ./requirements.txt ./requirements.txt
 COPY ./app ./app
 
 RUN pip install -r requirements.txt
-ENTRYPOINT [ "uvicorn", "app.main:app" ] 

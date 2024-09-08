@@ -10,7 +10,6 @@ RUN pip install --upgrade pip
 
 COPY ./requirements.txt ./requirements.txt
 COPY ./app ./app
-COPY ./.env ./.env
 COPY ./manage.py ./manage.py
 
 RUN pip install -r requirements.txt
