@@ -129,6 +129,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BROKER_URL = f'''amqp://{os.environ.get('RABBITMQ_USER')}:{os.environ.get('RABBITMQ_PASSWORD')}@{os.environ.get('RABBITMQ_HOST')}:{os.environ.get('RABBITMQ_PORT')}/'''
-print("CELERY_BROKER_URL: "+CELERY_BROKER_URL)
-print("CELERY_BROKER_URL: "+CELERY_BROKER_URL)
-print("CELERY_BROKER_URL: "+CELERY_BROKER_URL)
+
+AUTH_USER_MODEL = "core.User"
