@@ -12,10 +12,10 @@ class Transaction(BaseModel):
     account = models.ForeignKey("Account", on_delete=models.DO_NOTHING, verbose_name='Conta')
     category = models.ForeignKey("Category", on_delete=models.DO_NOTHING, verbose_name='Categoria')
 
+    description = models.CharField(max_length=255, verbose_name='Descrição')
     transaction_type = models.CharField(max_length=10, choices=TransactionType.choices, verbose_name='Tipo de Transação')
     date = models.DateTimeField(default=timezone.now, verbose_name='Data')
     value = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Valor')
-    description = models.CharField(max_length=255, verbose_name='Descrição')
     receipt = models.FileField(upload_to='receipts/', blank=True, null=True, verbose_name='Recibo')
 
     def __str__(self):
