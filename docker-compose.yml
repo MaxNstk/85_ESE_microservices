@@ -38,5 +38,11 @@ services:
     depends_on:
       - db
 
+  fastapi:
+    container_name: fastapi
+    build: ./pdf_to_image
+    ports:
+      - 8000:8001
+
 volumes:
   pgdata:
