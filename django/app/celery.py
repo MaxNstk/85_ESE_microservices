@@ -1,8 +1,15 @@
 import os
-from django.app.celery import Celery,shared_task
+from celery import Celery, shared_task
+
+# Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
+
 app = Celery('app')
-app.config_from_object("django.conf:settings", namespace="CELERY")
+
+# Load task modules from all registered Django app configs.
+app.config_from_object('django.conf:settings', namespace='CELERY')
+
+# Auto-discover tasks in installed apps
 app.autodiscover_tasks()
 
 @shared_task(name='celery.ping')
