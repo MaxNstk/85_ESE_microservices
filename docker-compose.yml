@@ -1,6 +1,7 @@
 services:
+
   db:
-    image: postgres:latest
+    image: postgres:16.4-alpine
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
@@ -11,6 +12,7 @@ services:
       - ${DB_PORT}:${DB_PORT}
     volumes:
       - pgdata:/var/lib/postgresql/data
+
   django:
     container_name: django
     environment:
@@ -19,9 +21,15 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
+      DB_HOST: db # serviço do postgres acima
     restart: always
     build:
       context: ./django 
+    command: >
+      sh -c "
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:${DJANGO_HOST_PORT}
+      "
     volumes:
       - ./django:/code
       - ./django/media:/code/media

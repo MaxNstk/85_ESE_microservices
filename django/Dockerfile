@@ -8,11 +8,9 @@ RUN chown root -R /code
 
 RUN pip install --upgrade pip
 
-COPY ./requirements.txt ./
-COPY ./app ./
-COPY ./manage.py ./
+COPY ./requirements.txt ./requirements.txt
+COPY ./app ./app
+COPY ./.env ./.env
+COPY ./manage.py ./manage.py
 
 RUN pip install -r requirements.txt
-#RUN python manage.py migrate
-
-ENTRYPOINT [ "python", "manage.py", "runserver", "0.0.0.0:8000"]
