@@ -1,6 +1,7 @@
 services:
 
   db:
+    container_name: db
     image: postgres:16.4-alpine
     restart: always
     environment:
@@ -13,6 +14,33 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.7-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - ${RABBITMQ_PORT}:${RABBITMQ_PORT}
+
+  celery_worker: 
+    container_name: celery_worker
+    environment:
+      DEBUG: "True"
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: rabbitmq  # serviço do rabbitmq acima
+    restart: always
+    network_mode: "host"
+    build:
+      context: ./django
+    command: celery -A app worker -l info
+    ports:
+      - 6900:6900
+    volumes:
+      - ./django:/code
+
   django:
     container_name: django
     environment:
@@ -21,10 +49,14 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
-      DB_HOST: db # serviço do postgres acima
+      DB_HOST: db  # serviço do postgres acima
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: rabbitmq  # serviço do rabbitmq acima
     restart: always
     build:
-      context: ./django 
+      context: ./django
     command: >
       sh -c "
         python manage.py migrate &&
