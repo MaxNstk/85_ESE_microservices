@@ -8,8 +8,9 @@ RUN chown root -R /code
 
 RUN pip install --upgrade pip
 
+RUN mkdir -p uploads
+
 COPY ./requirements.txt ./requirements.txt
 COPY ./app ./app
-COPY ./manage.py ./manage.py
 
 RUN pip install -r requirements.txt
