@@ -1,2 +1,5 @@
 venv/
 __pycache__/
+
+auth/node_modules/
+*/node_modules/
