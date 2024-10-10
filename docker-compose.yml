@@ -1,5 +1,4 @@
 services:
-
   db:
     container_name: db
     image: postgres:16.4-alpine
@@ -13,7 +12,10 @@ services:
       - ${DB_PORT}:${DB_PORT}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - project_network
 
+  # filas 
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.7-alpine
@@ -23,7 +25,10 @@ services:
     ports:
       - ${RABBITMQ_PORT}:${RABBITMQ_PORT}
       - '15672:15672'
+    networks:
+      - project_network
 
+  # workers das filas
   celery_worker: 
     container_name: celery_worker
     environment:
@@ -43,7 +48,10 @@ services:
       - 6900:6900
     volumes:
       - ./django:/code
+    networks:
+      - project_network
 
+  # projeto principal
   django:
     container_name: django
     environment:
@@ -72,7 +80,10 @@ services:
       - ${DJANGO_HOST_PORT}:${DJANGO_HOST_PORT}
     depends_on:
       - db
+    networks:
+      - project_network
 
+  # para realizar parse dos pdfs em imagens
   fastapi:
     container_name: fastapi
     build: ./pdf_to_image
@@ -87,6 +98,41 @@ services:
       sh -c "
         uvicorn app.main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
       "
+    networks:
+      - project_network
+
+  # para autenticação (armazenamento de usuarios)
+  mongo:
+    build: 
+      context: ./auth
+      dockerfile: Dockerfile.mongo
+    container_name: mongo_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - project_network      
+
+  # para autenticação (microsserviço)
+  authentication:
+    build: 
+      context: ./auth
+      dockerfile: Dockerfile.node
+    container_name: auth_container
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    networks:
+      - project_network  
+    volumes:
+      - ./auth/src:/app/src    
+      
 
 volumes:
   pgdata:
+  mongo_data:
+
+networks:
+  project_network:
