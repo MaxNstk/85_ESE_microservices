@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
-
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
@@ -11,7 +10,7 @@ import { UsersModule } from 'src/users/users.module';
             global: true,
             secret: "senhasupersecreta",
             signOptions: { expiresIn: '24h' },
-            }),
+        }),
         UsersModule
     ],
     providers: [AuthService],

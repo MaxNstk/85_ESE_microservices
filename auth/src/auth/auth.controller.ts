@@ -14,10 +14,10 @@ export class AuthController{
         return await this.authService.signIn(UserDto.username, UserDto.password);
     }
 
-    @Post()
+    @Post('/signInToken')
     @HttpCode(200)
-    async signInToken(@Body() token:string): Promise<User> {
-        return await this.authService.signInToken(token);
+    async signInToken(@Body() tokenDto: {token:string}): Promise<User> {
+        return await this.authService.signInToken(tokenDto.token);
     }
 
 }

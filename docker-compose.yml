@@ -125,7 +125,9 @@ services:
     depends_on:
       - mongo
     networks:
-      - project_network      
+      - project_network  
+    volumes:
+      - ./auth/src:/app/src    
       
 
 volumes:

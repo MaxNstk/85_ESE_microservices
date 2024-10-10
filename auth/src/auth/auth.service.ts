@@ -20,7 +20,7 @@ export class AuthService {
             );
             return await this.usersService.findUserByUsername(payload.username)
         } catch (e) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException(e.message);
         }
     }
 
