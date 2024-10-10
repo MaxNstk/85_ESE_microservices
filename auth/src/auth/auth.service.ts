@@ -13,7 +13,18 @@ export class AuthService {
         private jwtService: JwtService
     ) {}
 
-    async signIn(username:string, password:string): Promise<{ jwt: string, user:User }>{
+    async signInToken(token: string): Promise<User> {
+        try {
+            const payload = await this.jwtService.verifyAsync(
+                token, {secret: "senhasupersecreta"}
+            );
+            return await this.usersService.findUserByUsername(payload.username)
+        } catch (e) {
+            throw new UnauthorizedException();
+        }
+    }
+
+    async signIn(username:string, password:string): Promise<{ jwt: string, user:User }> {
         const user = await this.usersService.findUserByUsername(username);
         if (!user){ 
             throw new UnauthorizedException();

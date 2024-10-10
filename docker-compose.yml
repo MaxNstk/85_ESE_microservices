@@ -102,21 +102,19 @@ services:
       - project_network
 
   # para autenticação (armazenamento de usuarios)
-  mongodb:
+  mongo:
     build: 
       context: ./auth
       dockerfile: Dockerfile.mongo
     container_name: mongo_container
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
     volumes:
       - mongo_data:/data/db
     networks:
-      - project_network
+      - project_network      
 
+  # para autenticação (microsserviço)
   authentication:
     build: 
       context: ./auth
@@ -124,15 +122,15 @@ services:
     container_name: auth_container
     ports:
       - "3000:3000"
+    depends_on:
+      - mongo
     networks:
-      - project_network
+      - project_network      
       
 
 volumes:
   pgdata:
   mongo_data:
-    driver: local
 
 networks:
   project_network:
-    driver: bridge

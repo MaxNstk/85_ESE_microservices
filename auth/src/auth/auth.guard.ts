@@ -1,6 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 import {
     CanActivate,
     ExecutionContext,
@@ -26,7 +23,7 @@ import {
       }
       try {
         const payload = await this.jwtService.verifyAsync(
-          token, {secret: process.env.JWT_SECRET}
+          token, {secret: "senhasupersecreta"}
         );
         const user = await this.userService.findUserByUsername(payload.username)
         request['user'] = user;

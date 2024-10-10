@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, OnModuleInit } from "@nestjs/common";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import * as bcrypt from 'bcrypt';
@@ -7,11 +7,31 @@ import { UserDto } from "./user.dto";
 
 
 @Injectable()
-export default class UsersService{
+export default class UsersService implements OnModuleInit{
 
     constructor(
       @InjectModel(User.name) private userModel: Model<User>,
     ){}
+
+    async onModuleInit() {
+      const username = 'admin';
+      const password = 'admin';
+      
+      try{
+          await this.findUserByUsername(username);        
+      }catch(e){
+        if (!(e instanceof NotFoundException)){ throw e }
+        else{
+          await this.createUser(
+            {
+              username: username,
+              password: password,
+              fullName:"Admin User",
+            } as UserDto
+          ); 
+        }
+      }
+    }
 
     findAll(): Promise<User[]> {
       return this.userModel.find().populate('campus').exec();
@@ -37,9 +57,7 @@ export default class UsersService{
     }
 
     async findUserByUsername(username:string): Promise<User> {
-      const user = await this.userModel
-        .findOne({username})
-        .exec();
+      const user = await this.userModel.findOne({username}).exec();
       if (!user){
         throw new NotFoundException();
       }

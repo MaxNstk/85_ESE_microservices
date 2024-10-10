@@ -17,7 +17,7 @@ export class AuthMiddleware implements NestMiddleware {
       }
       try {
         const payload = await this.jwtService.verifyAsync(
-          token, {secret: process.env.JWT_SECRET}
+          token, {secret: "senhasupersecreta"}
         );
         const user = await this.userService.findUserByUsername(payload.username)
         req['user'] = user;

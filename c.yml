@@ -20,6 +20,9 @@ services:
       - "3000:3000"
     depends_on:
       - mongo
+    volumes:
+      - ./auth/src:/app/src
+
       
 volumes:
   mongo_data:
