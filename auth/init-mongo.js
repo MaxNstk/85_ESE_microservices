@@ -1,5 +1,5 @@
 // Define the database and user
-const dbName = 'mongodb';
+const dbName = 'seiladb';
 const adminUser = {
     user: 'admin',
     pwd: 'admin',

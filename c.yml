@@ -8,12 +8,11 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - mongo_data:/data/db
-    networks:
-      - project_network
+
 
   authentication:
     build: 
@@ -22,16 +21,9 @@ services:
     container_name: auth_container
     ports:
       - "3000:3000"
-    networks:
-      - project_network
-    volumes:
-      - ./auth:/app
+
     depends_on:
       - mongodb
       
 volumes:
   mongo_data:
-
-networks:
-  project_network:
-    driver: bridge
