@@ -55,7 +55,7 @@ services:
   django:
     container_name: django
     environment:
-      DJANGO_HOST_PORT: ${DJANGO_HOST_PORT}
+      DJANGO_HOST_PORT: 8000
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
@@ -71,13 +71,13 @@ services:
     command: >
       sh -c "
         python manage.py migrate &&
-        python manage.py runserver 0.0.0.0:${DJANGO_HOST_PORT}
+        python manage.py runserver 0.0.0.0:8000
       "
     volumes:
       - ./django:/code
       - ./django/media:/code/media
     ports:
-      - ${DJANGO_HOST_PORT}:${DJANGO_HOST_PORT}
+      - "8000:8000"
     depends_on:
       - db
     networks:
@@ -88,15 +88,15 @@ services:
     container_name: fastapi
     build: ./pdf_to_image
     environment:
-      FASTAPI_PORT: ${FASTAPI_PORT}
+      FASTAPI_PORT: 8001
     ports:
-      - ${FASTAPI_PORT}:${FASTAPI_PORT}
+      - "8001:8001"
     volumes:
       - ./pdf_to_image:/code
       - ./pdf_to_image/uploads:/code/uploads
     command: >
       sh -c "
-        uvicorn app.main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
+        uvicorn app.main:app --host 0.0.0.0 --port 8001
       "
     networks:
       - project_network
@@ -127,7 +127,21 @@ services:
     networks:
       - project_network  
     volumes:
-      - ./auth/src:/app/src    
+      - ./auth/src:/app/src   
+
+  nginx:
+    container_name: nginx_gateway
+    image: nginx:alpine
+    ports:
+      - "81:81"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - django
+      - fastapi
+      - authentication
+    networks:
+      - project_network 
       
 
 volumes:
