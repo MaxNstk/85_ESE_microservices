@@ -1,5 +1,5 @@
 // Define the database and user
-const dbName = 'seiladb';
+const dbName = 'auth_db';
 const adminUser = {
     user: 'admin',
     pwd: 'admin',
