@@ -9,7 +9,6 @@ class AccountType(models.TextChoices):
 
 
 class Account(BaseModel):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, verbose_name='Usuário')
     bank_name = models.CharField(max_length=50, verbose_name='Nome do Banco')
     account_number = models.CharField(max_length=20, verbose_name='Número da Conta', unique=True)
     account_type = models.CharField(max_length=10, choices=AccountType.choices, default=AccountType.CHECKING, verbose_name='Tipo de Conta')
@@ -17,3 +16,7 @@ class Account(BaseModel):
     
     def __str__(self):
         return f"({self.user.username}) {self.bank_name} - {self.account_number}"
+    
+    class Meta:
+        verbose_name = "Conta"
+        verbose_name_plural = "Contas"

@@ -20,3 +20,8 @@ class Transaction(BaseModel):
 
     def __str__(self):
         return f"{self.account} - {self.value} - {self.date}"
+
+    class Meta:
+        verbose_name = "Transação"
+        verbose_name_plural = "Transações"
+        
