@@ -3,7 +3,7 @@ import { AuthService } from "./auth.service";
 import { User } from "src/users/user.schema";
 
 
-@Controller('auth')
+@Controller('')
 export class AuthController{
 
     constructor(private readonly authService: AuthService) {}
@@ -14,7 +14,7 @@ export class AuthController{
         return await this.authService.signIn(UserDto.username, UserDto.password);
     }
 
-    @Post('/signInToken')
+    @Post('/token')
     @HttpCode(200)
     async signInToken(@Body() tokenDto: {token:string}): Promise<User> {
         return await this.authService.signInToken(tokenDto.token);
