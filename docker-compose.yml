@@ -1,5 +1,4 @@
 services:
-
   db:
     container_name: db
     image: postgres:16.4-alpine
@@ -13,7 +12,10 @@ services:
       - ${DB_PORT}:${DB_PORT}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - project_network
 
+  # filas 
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.7-alpine
@@ -23,9 +25,12 @@ services:
     ports:
       - ${RABBITMQ_PORT}:${RABBITMQ_PORT}
       - '15672:15672'
+    networks:
+      - project_network
     depends_on:
       - db
 
+  # workers das filas
   celery_worker: 
     container_name: celery_worker
     environment:
@@ -45,13 +50,16 @@ services:
       - 6900:6900
     volumes:
       - ./django:/code
+    networks:
+      - project_network
     depends_on:
       - rabbitmq
 
+  # projeto principal
   django:
     container_name: django
     environment:
-      DJANGO_HOST_PORT: ${DJANGO_HOST_PORT}
+      DJANGO_HOST_PORT: 8000
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
@@ -67,31 +75,83 @@ services:
     command: >
       sh -c "
         python manage.py migrate &&
-        python manage.py runserver 0.0.0.0:${DJANGO_HOST_PORT}
+        python manage.py runserver 0.0.0.0:8000
       "
     volumes:
       - ./django:/code
       - ./django/media:/code/media
     ports:
-      - ${DJANGO_HOST_PORT}:${DJANGO_HOST_PORT}
+      - "8000:8000"
     depends_on:
       - db
       - rabbitmq
+    networks:
+      - project_network
 
+  # para realizar parse dos pdfs em imagens
   fastapi:
     container_name: fastapi
     build: ./pdf_to_image
     environment:
-      FASTAPI_PORT: ${FASTAPI_PORT}
+      FASTAPI_PORT: 8001
     ports:
-      - ${FASTAPI_PORT}:${FASTAPI_PORT}
+      - "8001:8001"
     volumes:
       - ./pdf_to_image:/code
       - ./pdf_to_image/uploads:/code/uploads
     command: >
       sh -c "
-        uvicorn app.main:app --host 0.0.0.0 --port ${FASTAPI_PORT}
+        uvicorn app.main:app --host 0.0.0.0 --port 8001
       "
+    networks:
+      - project_network
+
+  # para autenticação (armazenamento de usuarios)
+  mongo:
+    build: 
+      context: ./auth
+      dockerfile: Dockerfile.mongo
+    container_name: mongo_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - project_network      
+
+  # para autenticação (microsserviço)
+  authentication:
+    build: 
+      context: ./auth
+      dockerfile: Dockerfile.node
+    container_name: auth_container
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    networks:
+      - project_network  
+    volumes:
+      - ./auth/src:/app/src   
+
+  nginx:
+    container_name: nginx_gateway
+    image: nginx:alpine
+    ports:
+      - "81:81"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - django
+      - fastapi
+      - authentication
+    networks:
+      - project_network 
+      
 
 volumes:
   pgdata:
+  mongo_data:
+
+networks:
+  project_network:
