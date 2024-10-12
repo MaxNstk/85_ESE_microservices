@@ -1,6 +1,6 @@
 # views.py
 
-import base64
+import requests
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -10,15 +10,7 @@ from app.core.models.transaction import Transaction
 
 def gerar_pdf(request):
 
-    transacoes = Transaction.objects.all() 
-
-    for transacao in transacoes:
-        if transacao.receipt:
-            with transacao.receipt.open('rb') as file:
-                receipt_content = file.read()
-                transacao.receipt_base64 = base64.b64encode(receipt_content).decode('utf-8')
-        else:
-            transacao.receipt_base64 = None 
+    transacoes = convert_pdf_to_image(Transaction.objects.all()) 
 
     context = {
         'titulo': 'Relatório de Extratos Financeiros',
@@ -36,3 +28,22 @@ def gerar_pdf(request):
         return HttpResponse('Erro ao gerar PDF', status=500)
 
     return response
+
+def convert_pdf_to_image(transacoes):
+
+    for transacao in transacoes:
+        if transacao.receipt:
+
+            with transacao.receipt.open('rb') as file:
+                files = {"file": (transacao.receipt.name, file, "application/pdf")}
+                response = requests.post("http://localhost:8001/v1/upload-pdf/", files=files)
+
+                if response.status_code == 200:
+                    transacao.receipt_base64 = response.json().get("images", [])
+                else:
+                    print(f"Erro ao enviar PDF: {response.status_code}, {response.text}")
+                    transacao.receipt_base64 = None
+        else:
+            transacao.receipt_base64 = None
+
+    return transacoes
