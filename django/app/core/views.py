@@ -36,7 +36,7 @@ def convert_pdf_to_image(transacoes):
 
             with transacao.receipt.open('rb') as file:
                 files = {"file": (transacao.receipt.name, file, "application/pdf")}
-                response = requests.post("http://localhost:8001/v1/upload-pdf/", files=files)
+                response = requests.post("http://fastapi:8001/v1/upload-pdf/", files=files)
 
                 if response.status_code == 200:
                     transacao.receipt_base64 = response.json().get("images", [])
