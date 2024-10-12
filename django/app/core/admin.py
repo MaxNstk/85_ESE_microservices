@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Account, Transaction, Category, User
 from django.contrib.auth.admin import UserAdmin
-
+import requests
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -28,9 +28,22 @@ class TransactionAdmin(admin.ModelAdmin):
 @admin.register(User)
 class UserAdmin(UserAdmin):
 
-    def changeform_view(self, request, *args, **kwargs):
-        return super().changeform_view(request, *args, **kwargs)
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("full_name", "username", "password1", "password2"),
+            },
+        ),
+    )
     
-    def add_view(self, request, *args, **kwargs):
-        return super().add_view(request, *args, **kwargs)
-    
+    def response_add(self, request, obj, **kwargs): 
+        res = super().response_add(request, obj, **kwargs ) 
+        response = requests.post('http://authentication:3000/',data={'username':'admin','password':'admin'})
+        response_data = response.json()
+        requests.post('http://authentication:3000/users/', 
+            data={"username":request.POST['username'], "password":request.POST['password1'], "fullName":request.POST['full_name']}, 
+            headers={'Authorization': f'Bearer {response_data['jwt']}'}
+        )
+        return res

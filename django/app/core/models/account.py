@@ -15,7 +15,7 @@ class Account(BaseModel):
     branch_code = models.CharField(max_length=10, blank=True, null=True, verbose_name='Código da Agência')
     
     def __str__(self):
-        return f"({self.user.username}) {self.bank_name} - {self.account_number}"
+        return f"{self.bank_name} - {self.account_number}"
     
     class Meta:
         verbose_name = "Conta"
