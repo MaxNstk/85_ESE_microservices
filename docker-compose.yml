@@ -83,6 +83,7 @@ services:
       - ./django/media:/code/media
     ports:
       - "8000:8000"
+      - "3005:3005"
     depends_on:
       - db
       - rabbitmq

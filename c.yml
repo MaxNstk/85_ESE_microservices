@@ -1,28 +1,58 @@
 services:
   # para autenticação (armazenamento de usuarios)
 
-  mongo:
-    build: 
-      context: ./auth
-      dockerfile: Dockerfile.mongo
-    container_name: mongo_container
+  db:
+    container_name: db
+    image: postgres:16.4-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGPORT: ${DB_PORT}
     ports:
-      - "27017:27017"
+      - ${DB_PORT}:${DB_PORT}
     volumes:
-      - mongo_data:/data/db
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - project_network
 
-  authentication:
-    build: 
-      context: ./auth
-      dockerfile: Dockerfile.node
-    container_name: auth_container
-    ports:
-      - "3000:3000"
-    depends_on:
-      - mongo
+  # projeto principal
+  django:
+    container_name: django
+    environment:
+      DJANGO_HOST_PORT: 8000
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_HOST: db  # serviço do postgres acima
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: rabbitmq  # serviço do rabbitmq acima
+    restart: always
+    build:
+      context: ./django
+    command: >
+      sh -c "
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:8000
+      "
     volumes:
-      - ./auth/src:/app/src
+      - ./django:/code
+      - ./django/media:/code/media
+    ports:
+      - "8000:8000"
+      - "3005:3005"
+    depends_on:
+      - db
+    networks:
+      - project_network
 
       
 volumes:
-  mongo_data:
+  pgdata:
+
+networks:
+  project_network:

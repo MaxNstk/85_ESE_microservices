@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Account, Transaction, Category
+from .models import Account, Transaction, Category, User
+from django.contrib.auth.admin import UserAdmin
 
 
 @admin.register(Category)
@@ -22,3 +23,14 @@ class TransactionAdmin(admin.ModelAdmin):
     search_fields = ('account__account_number', 'date', 'description')
     list_filter = ('transaction_type',)
     ordering = ('-date',) 
+
+
+@admin.register(User)
+class UserAdmin(UserAdmin):
+
+    def changeform_view(self, request, *args, **kwargs):
+        return super().changeform_view(request, *args, **kwargs)
+    
+    def add_view(self, request, *args, **kwargs):
+        return super().add_view(request, *args, **kwargs)
+    

@@ -29,9 +29,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [f'http://localhost:81']
 
-
-
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

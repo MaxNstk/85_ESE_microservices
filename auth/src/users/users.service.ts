@@ -34,7 +34,7 @@ export default class UsersService implements OnModuleInit{
     }
 
     findAll(): Promise<User[]> {
-      return this.userModel.find().populate('campus').exec();
+      return this.userModel.find().exec();
     }
 
     async createUser(userDTO: UserDto): Promise<User>{
