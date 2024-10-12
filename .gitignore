@@ -2,3 +2,5 @@ venv/
 __pycache__/
 
 auth/node_modules/
+
+django/media/receipts/*

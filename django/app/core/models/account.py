@@ -6,7 +6,7 @@ from .base_model import BaseModel
 class AccountType(models.TextChoices):
     CHECKING = "CHECKING", "Corrente"
     SAVINGS = "SAVINGS", "Poupança"
-
+ 
 
 class Account(BaseModel):
     bank_name = models.CharField(max_length=50, verbose_name='Nome do Banco')

@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,reverse_lazy
 from django.views.generic import RedirectView
+from app.core import views
 
 urlpatterns = [
     path('', RedirectView.as_view(url=reverse_lazy('admin:index'))),
-
     path('admin/', admin.site.urls),
+    path('relatorio/pdf/', views.gerar_pdf, name='gerar_pdf'),
 ]

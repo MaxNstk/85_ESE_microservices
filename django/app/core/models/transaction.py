@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from .base_model import BaseModel
 
-
+ 
 class TransactionType(models.TextChoices):
     EXPENSE = "EXPENSE", "Despesa"
     INCOME = "INCOME", "Receita"
