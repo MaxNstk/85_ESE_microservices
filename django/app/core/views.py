@@ -45,7 +45,7 @@ def convert_pdf_to_image(transactions):
         if transaction.receipt:
             with transaction.receipt.open('rb') as file:
                 files = {"file": ("arquivo.pdf", file, "application/pdf")}
-                response = requests.post("http://fastapi:8001/v1/upload-pdf/", files=files)
+                response = requests.post("http://localhost:81/pdfToImage/v1/upload-pdf/", files=files)
 
                 if response.status_code == 200:
                     image_data = base64.b64encode(response.content).decode("utf-8")

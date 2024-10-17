@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
 from .models import Account, Transaction, Category, User
 from django.contrib.auth.admin import UserAdmin
 import requests
@@ -15,7 +17,15 @@ class AccountAdmin(admin.ModelAdmin):
     search_fields = ('bank_name', 'account_number', 'branch_code')
     list_filter = ('account_type',)
     ordering = ['bank_name', 'account_number'] 
+    readonly_fields = ['generate_pdf_button']
 
+    def generate_pdf_button(self, obj):
+        if obj.pk: 
+            url = f"{reverse('gerar_pdf')}?account_number={obj.account_number}"
+            return format_html(f'<a class="button" href="{url}" target="_blank">Gerar Relatório de Transações</a>')
+        return "Salve a conta para gerar o relatório."
+    
+    generate_pdf_button.short_description = "Gerar Relatório PDF"
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
