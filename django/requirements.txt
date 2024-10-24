@@ -5,3 +5,4 @@ flower==2.0.1
 debugpy==1.8.0
 xhtml2pdf==0.2.16
 requests
+coverage
