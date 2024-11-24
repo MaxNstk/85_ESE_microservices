@@ -20,15 +20,13 @@ jobs:
           python-version: "3.12" 
 
       - name: Install dependencies
-        with:
-          context: ./django
+        working-directory: ./django
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run Django tests
-        with:
-          context: ./django      
+        working-directory: ./django
         run: |
           python manage.py test --noinput
           coverage report
