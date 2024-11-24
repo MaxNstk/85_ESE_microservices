@@ -24,6 +24,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set branch-specific tag
+        id: set-tag
+        run: |
+          if [[ "${{ github.ref_name }}" == "production" ]]; then
+            echo "IMAGE_TAG=maxxstk/85-servicos-daora:prod" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == "develop" ]]; then
+            echo "IMAGE_TAG=maxxstk/85-servicos-daora:dev" >> $GITHUB_ENV
+          else
+            echo "Unexpected branch: ${{ github.ref_name }}"
+            exit 1
+          fi
+
       - name: Set up Python environment
         uses: actions/setup-python@v4
         with:
@@ -50,18 +62,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Set branch-specific tag
-        id: set-tag
-        run: |
-          if [[ "${{ github.ref_name }}" == "production" ]]; then
-            echo "IMAGE_TAG=maxxstk/85-servicos-daora:prod" >> $GITHUB_ENV
-          elif [[ "${{ github.ref_name }}" == "develop" ]]; then
-            echo "IMAGE_TAG=maxxstk/85-servicos-daora:dev" >> $GITHUB_ENV
-          else
-            echo "Unexpected branch: ${{ github.ref_name }}"
-            exit 1
-          fi      
 
       - name: Build and push
         uses: docker/build-push-action@v5
