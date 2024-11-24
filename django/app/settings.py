@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app.core.apps.CoreConfig',
-    'django_prometheus',
     'celery',
+    'django_prometheus',
     
 ]
 
