@@ -23,6 +23,7 @@ from app.core import views
 urlpatterns = [
     path('', include('django_prometheus.urls')),
     path('', RedirectView.as_view(url=reverse_lazy('admin:index'))),
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('relatorio/pdf/', views.gerar_pdf, name='gerar_pdf'),
 ]
