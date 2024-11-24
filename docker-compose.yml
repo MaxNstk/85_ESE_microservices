@@ -55,6 +55,8 @@ services:
       - project_network
     depends_on:
       - rabbitmq
+      - django
+      - db
 
   # projeto principal
   django:
@@ -76,8 +78,6 @@ services:
     command: >
       sh -c "
         python manage.py migrate &&
-        coverage run manage.py test --noinput &&
-        coverage html &&
         python manage.py runserver 0.0.0.0:8000
       "
     volumes:
@@ -152,9 +152,34 @@ services:
       - authentication
     networks:
       - project_network 
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      GF_SERVER_HTTP_PORT: 2345
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    ports:
+     - 2345:2345
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-lifecycle'
+      - '--web.config.file=/etc/prometheus/web-config.yml'
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "./prometheus-web-config.yml:/etc/prometheus/web-config.yml"
+      - prometheus_data:/prometheus
+    ports:
+      - 9090:9090
       
 
 volumes:
+  grafana_data:
+  prometheus_data:
   pgdata:
   mongo_data:
 

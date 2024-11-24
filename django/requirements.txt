@@ -6,3 +6,4 @@ debugpy==1.8.0
 xhtml2pdf==0.2.16
 requests
 coverage
+django-prometheus==2.2.0
