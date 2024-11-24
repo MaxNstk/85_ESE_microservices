@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from .report_generators.pdf_report_generator import PDFReportGenerator
 
-# Create your views here.
+def gerar_pdf(request):
+    report_generator = PDFReportGenerator()
+    return report_generator.generate_report(request)

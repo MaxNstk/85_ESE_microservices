@@ -2,3 +2,6 @@ venv/
 __pycache__/
 
 auth/node_modules/
+
+django/media/receipts/*
+pdf_to_image/uploads/*

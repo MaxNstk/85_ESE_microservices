@@ -84,3 +84,38 @@
 
 - **Docker Compose**: Criar e documentar a arquitetura de microserviços utilizando Docker Compose.
 
+
+
+Trabalho 2
+• Definição do pipeline de CI/CD
+◦ Definir ferramenta de versionamento (Github, GiLab, Bitbucket)
+◦ Definir servidor de CI/CD (Jenkins, TavisCI, CircleCI, AWS code Pipeline)
+◦ Definir tecnologias para implementação e ferramentas de build
+▪ Ex: Java (maven, gradle, docker)
+◦ Definir ambientes
+▪ Ex: Desenvolvimento, Homologação, Produção (Pelo menos 2)
+◦ Definir estrutura de execução
+▪ Docker
+▪ Kubernetes
+◦ Execução dos testes automatizados
+▪ Definir métrica de cobertura de teste. Ex: 80%.
+◦ Utilizar Artefact Management (Nexus, DockerHub) ou Sonar ou Infraestrutura como
+código.
+◦ Ferramenta de Monitoramento Prometeus, Grafana
+◦ Documentação
+▪ Liberação de documentação de forma automática (Ex: Javadoc, swagger) -> http://localhost:8000/admin/doc/
+
+
+
+-----------------------------------
+promehteus e grafana
+
+acessar http://localhost:2345/
+user e senha: admin admin
+acessar http://localhost:2345/connections/datasources
+adicionar um ds do prometheus, colocar a [urlk]: (http://prometheus:9090)
+Save & Test
+Menu superior direito -> + -> import dashboard
+importar django, codigo: 17658
+
+https://medium.com/@tommyraspati/monitoring-your-django-project-with-prometheus-and-grafana-b06a5ca78744

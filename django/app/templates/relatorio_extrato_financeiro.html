@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ titulo }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333333;
+        }
+
+        .secao {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .cabecalho p {
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+
+        .conta-info, .transacao {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #DDDDDD;
+        }
+
+        .conta-info th, .conta-info td, .transacao th, .transacao td {
+            padding: 5px;
+            text-align: left;
+            border: 1px solid #DDDDDD;
+        }
+
+        .conta-info th, .transacao th {
+            background-color: #333333;
+            color: white;
+        }
+
+        .recibo {
+            text-align: center;
+        }
+
+        .recibo img {
+            width: 500px;
+            height: auto;
+        }
+
+        .rodape {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #777777;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="secao">
+        <h1>{{ title }}</h1>
+        <p>Data de Geração: {{ request_date|date:"d/m/Y H:i:s" }}</p>
+    </div>
+
+    <table class="conta-info">
+        <thead>
+            <tr>
+                <th colspan="2">Detalhes da Conta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Nome do Banco:</strong></td>
+                <td>{{ account.bank_name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Número da Conta:</strong></td>
+                <td>{{ account.account_number }}</td>
+            </tr>
+            <tr>
+                <td><strong>Tipo de Conta:</strong></td>
+                <td>{{ account.get_account_type_display }}</td>
+            </tr>
+            {% if account.branch_code %}
+                <tr>
+                    <td><strong>Código da Agência:</strong></td>
+                    <td>{{ account.branch_code }}</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <div class="secao">
+        <h1>Histórico de Transações</h1>
+    </div>
+
+    {% for transaction in transactions %}
+        <table class="transacao">
+            <thead>
+                <tr>
+                    <th colspan="2">Detalhes da Transação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Tipo de Transação:</strong></td>
+                    <td>{{ transaction.get_transaction_type_display }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Data:</strong></td>
+                    <td>{{ transaction.date|date:"d/m/Y" }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Horário:</strong></td>
+                    <td>{{ transaction.date|date:"H:i:s" }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Descrição:</strong></td>
+                    <td>{{ transaction.description }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Valor:</strong></td>
+                    <td>R$ {{ transaction.value }}</td>
+                </tr>
+                {% if transaction.receipt %}
+                    <tr>
+                        <td colspan="2">
+                            <div class="recibo">
+                                <img src="data:image/png;base64,{{ transaction.receipt_base64 }}" alt="Recibo">
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    {% endfor %}
+
+    <div class="rodape">
+        <p>Relatório gerado automaticamente pelo sistema.</p>
+    </div>
+
+</body>
+</html>

@@ -2,3 +2,9 @@ Django==5.1.1
 psycopg2-binary==2.9.9
 celery==5.3.5
 flower==2.0.1
+debugpy==1.8.0
+xhtml2pdf==0.2.16
+requests
+coverage
+django-prometheus
+docutils
