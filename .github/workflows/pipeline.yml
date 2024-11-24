@@ -67,4 +67,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
+          context: ./django
           tags: ${{ env.IMAGE_TAG }}          
