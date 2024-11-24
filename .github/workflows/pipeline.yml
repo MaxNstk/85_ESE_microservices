@@ -31,3 +31,4 @@ jobs:
         with:
           push: true
           tags: maxxstk/85-servicos-daora:latest
+          
