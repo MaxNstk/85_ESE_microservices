@@ -67,5 +67,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: maxxstk/85-servicos-daora:latest
           tags: ${{ env.IMAGE_TAG }}          
