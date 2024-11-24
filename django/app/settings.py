@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME',default='database'),
         'USER': os.environ.get('DB_USER',default='postgres'),
         'PASSWORD': os.environ.get('DB_PASSWORD',default='1234'),
-        'HOST': os.environ.get('DB_HOST',default='db'), # postgres service on docker-compsoe
+        'HOST': os.environ.get('DB_HOST',default='localhost'), # postgres service on docker-compsoe
         'PORT':os.environ.get('DB_PORT',default='5434'),
     }
 }
