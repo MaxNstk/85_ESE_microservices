@@ -84,3 +84,17 @@
 
 - **Docker Compose**: Criar e documentar a arquitetura de microserviços utilizando Docker Compose.
 
+
+
+
+
+
+-----------------------------------
+promehteus e grafana
+
+acessar http://localhost:2345/
+acessar http://localhost:2345/connections/datasources
+adicionar um ds do prometheus, colocar a [urlk]: (http://prometheus:9090)
+Save & Test
+Menu superior direito -> mport dashboard
+importar django, codigo: 17658
