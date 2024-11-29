@@ -117,3 +117,6 @@ Save & Test
 Menu superior direito -> + -> import dashboard
 importar django, codigo: 17658
 https://medium.com/@tommyraspati/monitoring-your-django-project-with-prometheus-and-grafana-b06a5ca78744
+
+
+teste deply
