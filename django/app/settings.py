@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.admindocs',
     'celery',
     'django_prometheus',
-    
 ]
 
 MIDDLEWARE = [
